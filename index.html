@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FORJA | A Armadura do 1%</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Oswald (Títulos Pesados) e Inter (Textos) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Oswald:ital,wght@0,500;0,700;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Ícones Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        oswald: ['Oswald', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            orange: '#FF4500', // Laranja quente de forja
+                            dark: '#0a0a0a',   // Preto quase absoluto
+                            zinc: '#18181b'    // Cinza industrial escuro
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos base brutais */
+        body {
+            background-color: #0a0a0a;
+            color: #f4f4f5;
+        }
+        
+        /* Efeito de glitch/hover nos botões principais */
+        .btn-forja {
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-forja:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255, 69, 0, 0.4);
+        }
+
+        /* Sobreposição de imagem escura */
+        .hero-overlay {
+            background: linear-gradient(90deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.8) 40%, rgba(10,10,10,0.4) 100%);
+        }
+
+        /* Menu Mobile Animação */
+        #mobile-menu {
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        #mobile-menu.hidden-menu {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        #mobile-menu.active-menu {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body class="font-inter antialiased overflow-x-hidden">
+
+    <!-- Navegação / Gatekeeping -->
+    <nav class="fixed w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo FORJA (SVG Customizado) -->
+                <div class="flex-shrink-0 flex items-center gap-2 z-50">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e4e4e7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sm:w-10 sm:h-10">
+                        <path d="M2 12l2-2h16l2 2-2 2H4l-2-2z"/>
+                        <path d="M12 14v8"/>
+                        <path d="M8 22h8"/>
+                        <path d="M7 10l5-5 5 5"/>
+                    </svg>
+                    <span class="font-oswald font-bold text-xl sm:text-2xl tracking-wider text-white italic">FORJA</span>
+                </div>
+                
+                <!-- Links Desktop (Escondidos no mobile para manter o foco) -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#manifesto" class="text-zinc-400 hover:text-white font-oswald tracking-wide uppercase transition-colors">O Manifesto</a>
+                    <a href="#equipamento" class="text-zinc-400 hover:text-white font-oswald tracking-wide uppercase transition-colors">Equipamento</a>
+                    <a href="#equipamento" class="border border-zinc-700 hover:border-brand-orange text-zinc-300 hover:text-white px-6 py-2 font-oswald uppercase tracking-wider transition-all duration-300">
+                        Junte-se ao 1%
+                    </a>
+                </div>
+
+                <!-- Botão Menu Mobile (Hamburger) -->
+                <div class="md:hidden flex items-center z-50">
+                    <button id="mobile-menu-btn" class="text-zinc-300 hover:text-white focus:outline-none p-2">
+                        <i data-lucide="menu" class="w-8 h-8" id="menu-icon"></i>
+                        <i data-lucide="x" class="w-8 h-8 hidden" id="close-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu Mobile Overlay (Ecrã Inteiro) -->
+    <div id="mobile-menu" class="hidden-menu fixed inset-0 z-40 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 pt-10">
+        <a href="#manifesto" class="mobile-link text-3xl sm:text-4xl text-zinc-400 hover:text-white font-oswald tracking-wide uppercase transition-colors">O Manifesto</a>
+        <a href="#equipamento" class="mobile-link text-3xl sm:text-4xl text-zinc-400 hover:text-white font-oswald tracking-wide uppercase transition-colors">Equipamento</a>
+        <div class="w-16 h-px bg-zinc-800 my-4"></div>
+        <a href="#equipamento" class="mobile-link bg-brand-orange text-white px-10 py-4 font-oswald font-bold uppercase tracking-widest text-xl transition-transform active:scale-95">
+            Junte-se ao 1%
+        </a>
+    </div>
+
+    <!-- Hero Section (O Manifesto) -->
+    <section id="manifesto" class="relative min-h-[100svh] flex items-center justify-start pt-20">
+        <!-- Background Image com overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop" alt="Atleta forjando o corpo" class="w-full h-full object-cover object-center sm:object-right opacity-60" />
+            <div class="absolute inset-0 hero-overlay"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-12">
+            <div class="max-w-3xl">
+                <!-- Tipografia ajustada para Mobile First -->
+                <h1 class="font-oswald font-bold italic text-5xl sm:text-7xl md:text-8xl text-white leading-[1.1] tracking-tight mb-4 sm:mb-6">
+                    A MEDIOCRIDADE É UMA ESCOLHA.<br>
+                    <span class="text-zinc-300">NÓS ESCOLHEMOS O PESO.</span>
+                </h1>
+                <p class="mt-6 text-lg sm:text-xl md:text-2xl text-zinc-400 font-inter max-w-2xl font-light border-l-4 border-brand-orange pl-4 mb-8 sm:mb-12">
+                    A FORJA não é para todos. É para quem exige o extremo de si mesmo. Não vendemos roupas confortáveis. Vendemos armaduras para o processo.
+                </p>
+                <a href="#equipamento" class="btn-forja inline-block bg-brand-orange text-white font-oswald font-bold text-lg sm:text-xl uppercase tracking-widest px-8 py-4 sm:px-10 sm:py-5 rounded-sm w-full sm:w-auto text-center">
+                    Adquirir Minha Armadura
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vitrine: O Equipamento do 1% -->
+    <section id="equipamento" class="py-20 sm:py-24 bg-brand-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-12 sm:mb-16 text-center sm:text-left">
+                <h2 class="font-oswald italic font-bold text-4xl sm:text-5xl md:text-6xl text-white uppercase tracking-tight">O Equipamento do 1%</h2>
+                <div class="w-16 sm:w-24 h-1 bg-brand-orange mt-4 mx-auto sm:mx-0"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
+                <!-- Produto 1: Regata Machão -->
+                <div class="group relative bg-brand-zinc border border-zinc-800 p-4 sm:p-6 transition-all duration-300 hover:border-zinc-600">
+                    <div class="aspect-[4/5] bg-zinc-900 overflow-hidden mb-6 relative">
+                        <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?q=80&w=2070&auto=format&fit=crop" alt="Regata Machão Forja" class="w-full h-full object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
+                        <div class="absolute top-3 right-3 sm:top-4 sm:right-4 bg-black/80 px-3 py-1 font-oswald text-xs sm:text-sm tracking-widest border border-zinc-700">LOTE LIMITADO</div>
+                    </div>
+                    <h3 class="font-oswald italic font-bold text-2xl sm:text-3xl text-white uppercase mb-2">Regata Machão "Iron Temper"</h3>
+                    <p class="text-zinc-400 font-inter text-sm sm:text-base mb-6 sm:mb-8">Algodão penteado denso. Corte brutalista que valoriza o trapézio e liberta o movimento. Projetada para não rasgar sob atrito constante.</p>
+                    <button class="w-full bg-zinc-100 hover:bg-white text-black font-oswald font-bold text-lg sm:text-xl uppercase tracking-widest py-4 transition-colors active:scale-95">
+                        Garantir a Minha - R$ 129
+                    </button>
+                </div>
+
+                <!-- Produto 2: Cropped Compressão -->
+                <div class="group relative bg-brand-zinc border border-zinc-800 p-4 sm:p-6 transition-all duration-300 hover:border-zinc-600">
+                    <div class="aspect-[4/5] bg-zinc-900 overflow-hidden mb-6 relative">
+                        <img src="https://images.unsplash.com/photo-1606902965551-dce093cda6e7?q=80&w=1974&auto=format&fit=crop" alt="Cropped Compressão Forja" class="w-full h-full object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
+                    </div>
+                    <h3 class="font-oswald italic font-bold text-2xl sm:text-3xl text-white uppercase mb-2">Cropped Compressão "Molten"</h3>
+                    <p class="text-zinc-400 font-inter text-sm sm:text-base mb-6 sm:mb-8">Poliamida esportiva extrema. Sustentação absoluta para treinos de carga máxima. Abraça o corpo como uma segunda pele funcional.</p>
+                    <button class="w-full bg-zinc-100 hover:bg-white text-black font-oswald font-bold text-lg sm:text-xl uppercase tracking-widest py-4 transition-colors active:scale-95">
+                        Garantir o Meu - R$ 149
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof (A Tribo) -->
+    <section class="py-16 sm:py-24 bg-black border-t border-zinc-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="font-oswald italic font-bold text-3xl sm:text-4xl text-white uppercase tracking-tight text-center mb-10 sm:mb-16">Quem já foi Forjado</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
+                <!-- Foto Tribo 1 -->
+                <div class="relative group overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=2069&auto=format&fit=crop" class="w-full aspect-square object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
+                    <div class="absolute bottom-2 left-2 bg-black/80 px-2 py-1 font-inter text-[10px] sm:text-xs text-zinc-400">@usuario_forja</div>
+                </div>
+                <!-- Foto Tribo 2 -->
+                <div class="relative group overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=2070&auto=format&fit=crop" class="w-full aspect-square object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
+                    <div class="absolute bottom-2 left-2 bg-black/80 px-2 py-1 font-inter text-[10px] sm:text-xs text-zinc-400">@atleta.n99</div>
+                </div>
+                <!-- Foto Tribo 3 -->
+                <div class="relative group overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&auto=format&fit=crop" class="w-full aspect-square object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
+                    <div class="absolute bottom-2 left-2 bg-black/80 px-2 py-1 font-inter text-[10px] sm:text-xs text-zinc-400">@iron_mind</div>
+                </div>
+                <!-- Foto Tribo 4 -->
+                <div class="relative group overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1534438097544-2458428801b2?q=80&w=2070&auto=format&fit=crop" class="w-full aspect-square object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
+                    <div class="absolute bottom-2 left-2 bg-black/80 px-2 py-1 font-inter text-[10px] sm:text-xs text-zinc-400">@ponto_um_</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Brutalista -->
+    <footer class="bg-brand-zinc py-10 sm:py-12 border-t border-zinc-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+            <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+                <span class="font-oswald font-bold text-2xl tracking-wider text-zinc-500 italic">FORJA</span>
+                <span class="text-zinc-600 text-xs sm:text-sm">© 2026. Todos os direitos reservados.</span>
+            </div>
+            
+            <div class="flex items-center gap-3 text-zinc-600 text-xs sm:text-sm bg-black/30 px-4 py-2 rounded-full border border-zinc-800/50">
+                <span>Operação Segura Via Mercado Pago</span>
+                <i data-lucide="shield-check" class="w-4 h-4 text-brand-orange"></i>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts de Interação (Mobile Menu) -->
+    <script>
+        // Inicializar Ícones Lucide
+        lucide.createIcons();
+
+        // Lógica do Menu Mobile
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+        const links = document.querySelectorAll('.mobile-link');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            
+            if (isMenuOpen) {
+                menu.classList.remove('hidden-menu');
+                menu.classList.add('active-menu');
+                document.body.style.overflow = 'hidden'; // Evita scroll do fundo
+                menuIcon.classList.add('hidden');
+                closeIcon.classList.remove('hidden');
+            } else {
+                menu.classList.remove('active-menu');
+                menu.classList.add('hidden-menu');
+                document.body.style.overflow = ''; // Restaura scroll
+                menuIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+            }
+        }
+
+        btn.addEventListener('click', toggleMenu);
+        
+        // Fechar menu ao clicar num link
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                if(isMenuOpen) toggleMenu();
+            });
+        });
+    </script>
+</body>
+</html>
