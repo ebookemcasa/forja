@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR" class="scroll-smooth bg-brand-dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FORJA | A Armadura do 1%</title>
+    <title>FORJA | Carregue um Propósito</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Oswald (Títulos Pesados) e Inter (Textos) -->
+    <!-- Google Fonts: Cinzel (Títulos Romanos), Inter (Textos) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Oswald:ital,wght@0,500;0,700;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <!-- Ícones Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -21,15 +21,18 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        oswald: ['Oswald', 'sans-serif'],
+                        cinzel: ['Cinzel', 'serif'], // Nova fonte para títulos estilo romano
                         inter: ['Inter', 'sans-serif'],
                     },
                     colors: {
                         brand: {
                             orange: '#FF4500', // Laranja quente de forja
-                            dark: '#0a0a0a',   // Preto quase absoluto
-                            zinc: '#18181b'    // Cinza industrial escuro
+                            dark: '#050505',   // Preto ainda mais profundo
+                            zinc: '#121214'    // Cinza industrial escuro
                         }
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
                     }
                 }
             }
@@ -39,22 +42,50 @@
     <style>
         /* Estilos base brutais */
         body {
-            background-color: #0a0a0a;
+            background-color: #050505;
             color: #f4f4f5;
         }
         
         /* Efeito de glitch/hover nos botões principais */
         .btn-forja {
-            transition: all 0.2s ease-in-out;
+            transition: all 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-forja::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 69, 0, 0.2), transparent);
+            transition: 0.4s;
+        }
+        .btn-forja:hover::after {
+            left: 100%;
         }
         .btn-forja:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(255, 69, 0, 0.4);
+            box-shadow: 0 4px 25px rgba(255, 69, 0, 0.3);
         }
 
-        /* Sobreposição de imagem escura */
+        /* Sobreposições de imagem */
         .hero-overlay {
-            background: linear-gradient(90deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.8) 40%, rgba(10,10,10,0.4) 100%);
+            background: linear-gradient(0deg, rgba(5,5,5,1) 0%, rgba(5,5,5,0.7) 50%, rgba(5,5,5,0.4) 100%);
+        }
+        .card-overlay {
+            background: linear-gradient(0deg, rgba(5,5,5,0.9) 10%, rgba(5,5,5,0.4) 100%);
+            transition: all 0.3s ease;
+        }
+        .group:hover .card-overlay {
+            background: linear-gradient(0deg, rgba(5,5,5,0.8) 0%, rgba(5,5,5,0.2) 100%);
+        }
+
+        /* Utilitários de Texto Vertical */
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
         }
 
         /* Menu Mobile Animação */
@@ -71,37 +102,98 @@
             visibility: visible;
             pointer-events: auto;
         }
+
+        /* --- EFEITO DE FAÍSCAS DA FORJA --- */
+        .spark {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 0 4px #FF4500, 0 0 8px #FF8C00;
+            animation: forge-spark 0.8s ease-out forwards;
+        }
+
+        @keyframes forge-spark {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
     </style>
 </head>
-<body class="font-inter antialiased overflow-x-hidden">
+<body class="font-inter antialiased overflow-x-hidden bg-brand-dark">
 
-    <!-- Navegação / Gatekeeping -->
-    <nav class="fixed w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- =========================================
+         GATEKEEPER (Filtro de Entrada)
+         ========================================= -->
+    <div id="gatekeeper" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-4 transition-opacity duration-700">
+        <div class="max-w-xl w-full border border-zinc-800 bg-brand-zinc p-8 sm:p-12 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-orange-900/10 via-transparent to-transparent"></div>
+            <div class="relative z-10">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FF4500" stroke-width="1.5" class="mx-auto mb-6">
+                    <path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"></path>
+                    <path d="M12 14v8"></path>
+                </svg>
+
+                <h2 class="font-cinzel font-bold text-3xl sm:text-4xl text-white uppercase tracking-tight mb-4">
+                    O comum não entra aqui.
+                </h2>
+                
+                <p class="text-zinc-400 font-inter text-sm sm:text-base leading-relaxed mb-8">
+                    99% das pessoas desistem quando o corpo pede arrego. A <span class="text-white font-cinzel tracking-wider text-brand-orange">FORJA</span> é para o 1% que sangra no escuro. Responda com honestidade:
+                </p>
+
+                <div class="flex flex-col gap-4">
+                    <button id="btn-excecao" class="bg-brand-orange text-white font-cinzel font-bold text-lg uppercase tracking-widest py-4 transition-transform active:scale-95 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                        EU SOU A EXCEÇÃO
+                    </button>
+                    
+                    <a href="https://www.google.com/search?q=pijamas+confortaveis" class="text-zinc-500 hover:text-zinc-300 font-inter text-xs sm:text-sm underline underline-offset-4 transition-colors mt-2">
+                        Eu sou apenas mais um. Retornar ao conforto.
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =========================================
+         NAVEGAÇÃO (Header Redesenhado)
+         ========================================= -->
+    <nav class="fixed w-full z-50 bg-gradient-to-b from-brand-dark/90 to-transparent pt-4 transition-all duration-300" id="main-nav">
+        <div class="max-w-[1400px] mx-auto px-6 sm:px-8">
             <div class="flex justify-between items-center h-20">
-                <!-- Logo FORJA (SVG Customizado) -->
-                <div class="flex-shrink-0 flex items-center gap-2 z-50">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e4e4e7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sm:w-10 sm:h-10">
-                        <path d="M2 12l2-2h16l2 2-2 2H4l-2-2z"/>
-                        <path d="M12 14v8"/>
-                        <path d="M8 22h8"/>
-                        <path d="M7 10l5-5 5 5"/>
-                    </svg>
-                    <span class="font-oswald font-bold text-xl sm:text-2xl tracking-wider text-white italic">FORJA</span>
+                
+                <!-- 1. Logo Esquerda -->
+                <div class="flex-shrink-0 flex items-center gap-3 z-50">
+                    <img src="img/logoforja2.PNG" alt="Logo Forja" class="h-18 sm:h-20">
                 </div>
                 
-                <!-- Links Desktop (Escondidos no mobile para manter o foco) -->
-                <div class="hidden md:flex space-x-8 items-center">
-                    <a href="#manifesto" class="text-zinc-400 hover:text-white font-oswald tracking-wide uppercase transition-colors">O Manifesto</a>
-                    <a href="#equipamento" class="text-zinc-400 hover:text-white font-oswald tracking-wide uppercase transition-colors">Equipamento</a>
-                    <a href="#equipamento" class="border border-zinc-700 hover:border-brand-orange text-zinc-300 hover:text-white px-6 py-2 font-oswald uppercase tracking-wider transition-all duration-300">
-                        Junte-se ao 1%
-                    </a>
+                <!-- 2. Links Centralizados (Desktop) -->
+                <div class="hidden md:flex items-center space-x-10">
+                    <a href="#" class="text-white font-inter text-xs uppercase tracking-widest hover:text-brand-orange transition-colors">Início</a>
+                    <a href="#colecoes" class="text-zinc-400 font-inter text-xs uppercase tracking-widest hover:text-white transition-colors">Coleções</a>
+                    <a href="#bestsellers" class="text-zinc-400 font-inter text-xs uppercase tracking-widest hover:text-white transition-colors">Produtos</a>
+                    <a href="#sobre" class="text-zinc-400 font-inter text-xs uppercase tracking-widest hover:text-white transition-colors">Sobre Nós</a>
+                </div>
+
+                <!-- 3. Ícones Direita (Busca, Conta, Carrinho) -->
+                <div class="hidden md:flex items-center space-x-6 text-white">
+                    <button class="hover:text-brand-orange transition-colors"><i data-lucide="search" class="w-5 h-5"></i></button>
+                    <button class="hover:text-brand-orange transition-colors"><i data-lucide="user" class="w-5 h-5"></i></button>
+                    <button class="hover:text-brand-orange transition-colors relative">
+                        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                        <span class="absolute -top-2 -right-2 bg-brand-orange text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">0</span>
+                    </button>
                 </div>
 
                 <!-- Botão Menu Mobile (Hamburger) -->
-                <div class="md:hidden flex items-center z-50">
-                    <button id="mobile-menu-btn" class="text-zinc-300 hover:text-white focus:outline-none p-2">
+                <div class="md:hidden flex items-center z-50 gap-4">
+                    <button class="text-white hover:text-brand-orange relative">
+                        <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+                        <span class="absolute -top-1 -right-1 bg-brand-orange text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">0</span>
+                    </button>
+                    <button id="mobile-menu-btn" class="text-zinc-300 hover:text-white focus:outline-none">
                         <i data-lucide="menu" class="w-8 h-8" id="menu-icon"></i>
                         <i data-lucide="x" class="w-8 h-8 hidden" id="close-icon"></i>
                     </button>
@@ -110,129 +202,403 @@
         </div>
     </nav>
 
-    <!-- Menu Mobile Overlay (Ecrã Inteiro) -->
-    <div id="mobile-menu" class="hidden-menu fixed inset-0 z-40 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 pt-10">
-        <a href="#manifesto" class="mobile-link text-3xl sm:text-4xl text-zinc-400 hover:text-white font-oswald tracking-wide uppercase transition-colors">O Manifesto</a>
-        <a href="#equipamento" class="mobile-link text-3xl sm:text-4xl text-zinc-400 hover:text-white font-oswald tracking-wide uppercase transition-colors">Equipamento</a>
-        <div class="w-16 h-px bg-zinc-800 my-4"></div>
-        <a href="#equipamento" class="mobile-link bg-brand-orange text-white px-10 py-4 font-oswald font-bold uppercase tracking-widest text-xl transition-transform active:scale-95">
-            Junte-se ao 1%
-        </a>
+    <!-- Menu Mobile Overlay -->
+    <div id="mobile-menu" class="hidden-menu fixed inset-0 z-40 bg-brand-dark/98 flex flex-col items-center justify-center space-y-8 pt-10">
+        <a href="#" class="mobile-link text-2xl text-white font-cinzel uppercase tracking-widest">Início</a>
+        <a href="#colecoes" class="mobile-link text-2xl text-zinc-400 hover:text-white font-cinzel uppercase tracking-widest transition-colors">Coleções</a>
+        <a href="#bestsellers" class="mobile-link text-2xl text-zinc-400 hover:text-white font-cinzel uppercase tracking-widest transition-colors">Produtos</a>
+        <a href="#sobre" class="mobile-link text-2xl text-zinc-400 hover:text-white font-cinzel uppercase tracking-widest transition-colors">Sobre Nós</a>
+        <div class="flex gap-6 mt-8">
+            <button class="text-white"><i data-lucide="search" class="w-6 h-6"></i></button>
+            <button class="text-white"><i data-lucide="user" class="w-6 h-6"></i></button>
+        </div>
     </div>
 
-    <!-- Hero Section (O Manifesto) -->
-    <section id="manifesto" class="relative min-h-[100svh] flex items-center justify-start pt-20">
-        <!-- Background Image com overlay -->
+
+    <!-- =========================================
+         HERO SECTION (Baseado na imagem)
+         ========================================= -->
+    <section id="hero" class="relative h-[95svh] min-h-[600px] flex items-center">
+        <!-- Background Image -->
         <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop" alt="Atleta forjando o corpo" class="w-full h-full object-cover object-center sm:object-right opacity-60" />
-            <div class="absolute inset-0 hero-overlay"></div>
+            <!-- Correção feita aqui: Adicionado o ">" no final da tag img -->
+            <img src="img/forjainicio.png" alt="Atleta Forja" class="w-full h-full object-cover object-center opacity-80" />
+            <div class="hero-overlay absolute inset-0"></div>
         </div>
 
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-12">
-            <div class="max-w-3xl">
-                <!-- Tipografia ajustada para Mobile First -->
-                <h1 class="font-oswald font-bold italic text-5xl sm:text-7xl md:text-8xl text-white leading-[1.1] tracking-tight mb-4 sm:mb-6">
-                    A MEDIOCRIDADE É UMA ESCOLHA.<br>
-                    <span class="text-zinc-300">NÓS ESCOLHEMOS O PESO.</span>
+        <!-- Conteúdo Principal -->
+        <div class="relative z-10 max-w-[1400px] mx-auto px-6 sm:px-8 w-full flex items-center h-full">
+            <div class="max-w-lg flex flex-col items-center text-center mt-12 sm:mt-0">
+                <h1 class="font-cinzel font-normal text-3xl sm:text-4xl lg:text-[2.6rem] text-white leading-snug tracking-[0.08em] mb-8 drop-shadow-lg">
+                    <span class="block mb-1 text-zinc-100">VOCÊ NÃO COMPRA</span>
+                    <span class="block mb-4 text-zinc-100">UMA PEÇA.</span>
+                    <span class="block mb-1" style="color: #c59d76;">VOCÊ CARREGA</span>
+                    <span class="block" style="color: #c59d76;">UM PROPÓSITO.</span>
                 </h1>
-                <p class="mt-6 text-lg sm:text-xl md:text-2xl text-zinc-400 font-inter max-w-2xl font-light border-l-4 border-brand-orange pl-4 mb-8 sm:mb-12">
-                    A FORJA não é para todos. É para quem exige o extremo de si mesmo. Não vendemos roupas confortáveis. Vendemos armaduras para o processo.
+                
+                <p class="text-zinc-300 font-inter text-[10px] sm:text-xs uppercase tracking-[0.2em] mb-10">
+                    Vestuário criado para os que escolhem a disciplina todos os dias.
                 </p>
-                <a href="#equipamento" class="btn-forja inline-block bg-brand-orange text-white font-oswald font-bold text-lg sm:text-xl uppercase tracking-widest px-8 py-4 sm:px-10 sm:py-5 rounded-sm w-full sm:w-auto text-center">
-                    Adquirir Minha Armadura
+                
+                <a href="#colecoes" class="group inline-flex items-center gap-4 border border-zinc-500/50 hover:border-[#c59d76] bg-transparent hover:bg-[#c59d76]/10 text-zinc-300 font-inter text-[11px] uppercase tracking-[0.2em] px-8 py-3 transition-all duration-300">
+                    <span>Ver Coleções</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
                 </a>
             </div>
         </div>
+
+        <!-- Texto Vertical Lateral -->
+        <div class="absolute right-4 sm:right-8 bottom-32 z-20 hidden sm:block">
+            <p class="vertical-text font-cinzel text-xs uppercase tracking-[0.4em] text-white/40 rotate-180">
+                Forjado nas sombras // Edição 01
+            </p>
+            <div class="h-24 w-px bg-white/20 mx-auto mt-8"></div>
+        </div>
     </section>
 
-    <!-- Vitrine: O Equipamento do 1% -->
-    <section id="equipamento" class="py-20 sm:py-24 bg-brand-dark">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-12 sm:mb-16 text-center sm:text-left">
-                <h2 class="font-oswald italic font-bold text-4xl sm:text-5xl md:text-6xl text-white uppercase tracking-tight">O Equipamento do 1%</h2>
-                <div class="w-16 sm:w-24 h-1 bg-brand-orange mt-4 mx-auto sm:mx-0"></div>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
-                <!-- Produto 1: Regata Machão -->
-                <div class="group relative bg-brand-zinc border border-zinc-800 p-4 sm:p-6 transition-all duration-300 hover:border-zinc-600">
-                    <div class="aspect-[4/5] bg-zinc-900 overflow-hidden mb-6 relative">
-                        <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?q=80&w=2070&auto=format&fit=crop" alt="Regata Machão Forja" class="w-full h-full object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
-                        <div class="absolute top-3 right-3 sm:top-4 sm:right-4 bg-black/80 px-3 py-1 font-oswald text-xs sm:text-sm tracking-widest border border-zinc-700">LOTE LIMITADO</div>
+    <!-- =========================================
+         SEÇÃO: GRID DE COLEÇÕES (BURLADO / AJUSTADO)
+         ========================================= -->
+    <section id="colecoes" class="py-20 bg-brand-dark">
+        <div class="max-w-[1400px] mx-auto px-6 sm:px-8">
+            <!-- Novo layout horizontal idêntico à sua segunda imagem -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                
+                <!-- 1. CAMISETAS (Ativo e Clicável) -->
+                <a href="#bestsellers" class="group relative aspect-[4/5] overflow-hidden bg-zinc-900 block border border-transparent hover:border-zinc-700 transition-colors">
+                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1780&auto=format&fit=crop" class="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end items-center pb-8">
+                        <i data-lucide="sword" class="w-8 h-8 text-zinc-400 mb-4 group-hover:text-brand-orange transition-colors"></i>
+                        <h3 class="text-white font-cinzel text-lg sm:text-xl uppercase tracking-widest mb-2">Camisetas</h3>
+                        <p class="text-brand-orange font-inter text-[10px] uppercase tracking-[0.2em]">Ver Mais</p>
                     </div>
-                    <h3 class="font-oswald italic font-bold text-2xl sm:text-3xl text-white uppercase mb-2">Regata Machão "Iron Temper"</h3>
-                    <p class="text-zinc-400 font-inter text-sm sm:text-base mb-6 sm:mb-8">Algodão penteado denso. Corte brutalista que valoriza o trapézio e liberta o movimento. Projetada para não rasgar sob atrito constante.</p>
-                    <button class="w-full bg-zinc-100 hover:bg-white text-black font-oswald font-bold text-lg sm:text-xl uppercase tracking-widest py-4 transition-colors active:scale-95">
-                        Garantir a Minha - R$ 129
-                    </button>
+                </a>
+
+                <!-- 2. MOLETONS (Trancado - Em Breve) -->
+                <!-- Note o cursor-not-allowed e o pointer-events-none para não deixar clicar -->
+                <div class="group relative aspect-[4/5] overflow-hidden bg-black cursor-not-allowed border border-zinc-900/50">
+                    <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=1887&auto=format&fit=crop" class="w-full h-full object-cover grayscale opacity-20">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent flex flex-col justify-end items-center pb-8">
+                        <i data-lucide="anvil" class="w-8 h-8 text-zinc-700 mb-4"></i>
+                        <h3 class="text-zinc-600 font-cinzel text-lg sm:text-xl uppercase tracking-widest mb-2">Moletons</h3>
+                        <p class="text-zinc-700 font-inter text-[10px] uppercase tracking-[0.2em] font-bold">Em Breve</p>
+                    </div>
                 </div>
 
-                <!-- Produto 2: Cropped Compressão -->
-                <div class="group relative bg-brand-zinc border border-zinc-800 p-4 sm:p-6 transition-all duration-300 hover:border-zinc-600">
-                    <div class="aspect-[4/5] bg-zinc-900 overflow-hidden mb-6 relative">
-                        <img src="https://images.unsplash.com/photo-1606902965551-dce093cda6e7?q=80&w=1974&auto=format&fit=crop" alt="Cropped Compressão Forja" class="w-full h-full object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
+                <!-- 3. CALÇAS (Trancado - Em Breve) -->
+                <div class="group relative aspect-[4/5] overflow-hidden bg-black cursor-not-allowed border border-zinc-900/50 hidden sm:block">
+                    <img src="https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?q=80&w=1997&auto=format&fit=crop" class="w-full h-full object-cover grayscale opacity-20">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent flex flex-col justify-end items-center pb-8">
+                        <i data-lucide="flame" class="w-8 h-8 text-zinc-700 mb-4"></i>
+                        <h3 class="text-zinc-600 font-cinzel text-lg sm:text-xl uppercase tracking-widest mb-2">Calças</h3>
+                        <p class="text-zinc-700 font-inter text-[10px] uppercase tracking-[0.2em] font-bold">Em Breve</p>
                     </div>
-                    <h3 class="font-oswald italic font-bold text-2xl sm:text-3xl text-white uppercase mb-2">Cropped Compressão "Molten"</h3>
-                    <p class="text-zinc-400 font-inter text-sm sm:text-base mb-6 sm:mb-8">Poliamida esportiva extrema. Sustentação absoluta para treinos de carga máxima. Abraça o corpo como uma segunda pele funcional.</p>
-                    <button class="w-full bg-zinc-100 hover:bg-white text-black font-oswald font-bold text-lg sm:text-xl uppercase tracking-widest py-4 transition-colors active:scale-95">
-                        Garantir o Meu - R$ 149
-                    </button>
                 </div>
+
+                <!-- 4. ACESSÓRIOS (Trancado - Em Breve) -->
+                <div class="group relative aspect-[4/5] overflow-hidden bg-black cursor-not-allowed border border-zinc-900/50 hidden md:block">
+                    <img src="https://images.unsplash.com/photo-1618453292459-53424b68bb1d?q=80&w=1964&auto=format&fit=crop" class="w-full h-full object-cover grayscale opacity-20">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent flex flex-col justify-end items-center pb-8">
+                        <i data-lucide="dumbbell" class="w-8 h-8 text-zinc-700 mb-4"></i>
+                        <h3 class="text-zinc-600 font-cinzel text-lg sm:text-xl uppercase tracking-widest mb-2">Acessórios</h3>
+                        <p class="text-zinc-700 font-inter text-[10px] uppercase tracking-[0.2em] font-bold">Em Breve</p>
+                    </div>
+                </div>
+
+                <!-- 5. TODOS (Ativo e Clicável) -->
+                <a href="#bestsellers" class="group relative aspect-[4/5] overflow-hidden bg-zinc-900 block border border-transparent hover:border-zinc-700 transition-colors">
+                    <img src="https://images.unsplash.com/photo-1589842502498-5060f23b835d?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end items-center pb-8">
+                        <i data-lucide="shield" class="w-8 h-8 text-zinc-400 mb-4 group-hover:text-brand-orange transition-colors"></i>
+                        <h3 class="text-white font-cinzel text-lg sm:text-xl uppercase tracking-widest mb-2">Todos</h3>
+                        <p class="text-brand-orange font-inter text-[10px] uppercase tracking-[0.2em]">Ver Tudo</p>
+                    </div>
+                </a>
+
             </div>
         </div>
     </section>
 
-    <!-- Social Proof (A Tribo) -->
-    <section class="py-16 sm:py-24 bg-black border-t border-zinc-900">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="font-oswald italic font-bold text-3xl sm:text-4xl text-white uppercase tracking-tight text-center mb-10 sm:mb-16">Quem já foi Forjado</h2>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
-                <!-- Foto Tribo 1 -->
-                <div class="relative group overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=2069&auto=format&fit=crop" class="w-full aspect-square object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
-                    <div class="absolute bottom-2 left-2 bg-black/80 px-2 py-1 font-inter text-[10px] sm:text-xs text-zinc-400">@usuario_forja</div>
+
+    <!-- =========================================
+         SEÇÃO: MANIFESTO (Imagem como fundo)
+         ========================================= -->
+    <section id="manifesto-divisor" class="py-20 bg-brand-dark">
+        <div class="max-w-[1400px] mx-auto px-6 sm:px-8">
+            <!-- Container com borda e imagem de fundo -->
+            <div class="relative w-full overflow-hidden bg-[#050505] min-h-[500px] flex items-center border border-zinc-900 rounded-sm">
+                
+                <!-- Imagem de Fundo (A Bandeira) cobrindo todo o container -->
+                <div class="absolute inset-0 z-0">
+                    <!-- Troque este link pela imagem da sua bandeira -->
+                    <img src="img/bandeira.png"/>
+                    
+                    <!-- Gradiente da esquerda para a direita para garantir que o texto fique legível -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
+                    
+                    <!-- Simulação do logo Forja na direita -->
+                    
                 </div>
-                <!-- Foto Tribo 2 -->
-                <div class="relative group overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=2070&auto=format&fit=crop" class="w-full aspect-square object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
-                    <div class="absolute bottom-2 left-2 bg-black/80 px-2 py-1 font-inter text-[10px] sm:text-xs text-zinc-400">@atleta.n99</div>
+
+                <!-- Conteúdo de Texto por cima da imagem -->
+                <div class="relative z-10 w-full max-w-2xl px-8 py-16 sm:px-16 lg:py-20">
+                    <h2 class="font-cinzel font-bold text-3xl sm:text-4xl lg:text-[2.5rem] text-white uppercase tracking-[0.1em] mb-8 leading-tight">
+                        <span class="block text-zinc-400 mb-2">MAIS QUE ROUPA.</span>
+                        <span class="block text-white">UM PROPÓSITO.</span>
+                    </h2>
+                    
+                    <div class="space-y-3 text-zinc-300 font-inter text-sm sm:text-sm tracking-wide leading-relaxed mb-10 border-l border-zinc-700 pl-4">
+                        <p>A Forja não veste qualquer um.</p>
+                        <p>É para os que se levantam quando ninguém está olhando.</p>
+                        <p>Para os que transformam dor em força.</p>
+                        <p>Disciplina em hábito. E propósito em legado.</p>
+                        <p>Você não compra uma peça.</p>
+                        <p>Você carrega um lembrete do que escolheu se tornar.</p>
+                    </div>
+                    
+                    <a href="#sobre" class="inline-block w-fit border border-zinc-700 hover:border-brand-orange text-zinc-300 hover:text-white font-inter text-[11px] uppercase tracking-[0.2em] px-8 py-4 transition-all duration-300 hover:bg-brand-orange/10 bg-black/40 backdrop-blur-sm">
+                        CONHEÇA NOSSO MANIFESTO
+                    </a>
                 </div>
-                <!-- Foto Tribo 3 -->
-                <div class="relative group overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&auto=format&fit=crop" class="w-full aspect-square object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
-                    <div class="absolute bottom-2 left-2 bg-black/80 px-2 py-1 font-inter text-[10px] sm:text-xs text-zinc-400">@iron_mind</div>
-                </div>
-                <!-- Foto Tribo 4 -->
-                <div class="relative group overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1534438097544-2458428801b2?q=80&w=2070&auto=format&fit=crop" class="w-full aspect-square object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
-                    <div class="absolute bottom-2 left-2 bg-black/80 px-2 py-1 font-inter text-[10px] sm:text-xs text-zinc-400">@ponto_um_</div>
-                </div>
+
             </div>
         </div>
     </section>
 
-    <!-- Footer Brutalista -->
-    <footer class="bg-brand-zinc py-10 sm:py-12 border-t border-zinc-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-            <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
-                <span class="font-oswald font-bold text-2xl tracking-wider text-zinc-500 italic">FORJA</span>
-                <span class="text-zinc-600 text-xs sm:text-sm">© 2026. Todos os direitos reservados.</span>
+
+    <!-- =========================================
+         SEÇÃO: DESTAQUES (Antigo Mais Vendidos)
+         ========================================= -->
+    <section id="bestsellers" class="py-24 bg-black relative">
+        
+        <!-- Título da Seção -->
+        <div class="max-w-[1400px] mx-auto px-6 sm:px-8 mb-16">
+            <div class="flex items-center justify-between mb-8">
+                 <h2 class="font-cinzel font-bold text-2xl sm:text-3xl text-white uppercase tracking-[0.15em]">Destaques</h2>
+                 <a href="#" class="hidden sm:flex items-center gap-2 text-zinc-400 hover:text-brand-orange font-inter text-xs uppercase tracking-widest transition-colors">
+                    Ver Todos <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                 </a>
             </div>
+            <!-- Divisor -->
+            <div class="flex items-center gap-4">
+                <div class="h-px bg-zinc-800 flex-grow"></div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF4500" stroke-width="1.5" class="text-brand-orange">
+                    <path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"></path>
+                </svg>
+                <div class="h-px bg-zinc-800 flex-grow"></div>
+            </div>
+        </div>
+
+        <!-- Grid de Produtos -->
+        <div class="max-w-[1400px] mx-auto px-6 sm:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
+                
+                <!-- Produto 1 -->
+                <div class="product-card group cursor-pointer">
+                    <div class="relative bg-zinc-900 aspect-[3/4] overflow-hidden mb-4 border border-transparent group-hover:border-zinc-800 transition-colors">
+                        <div class="absolute top-3 left-3 z-20 bg-transparent border border-zinc-500 text-zinc-300 font-inter text-[10px] font-bold uppercase tracking-wider px-2 py-1">Novo</div>
+                        <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500">
+                    </div>
+                    <div>
+                        <h3 class="text-white font-cinzel text-sm uppercase tracking-wider mb-1">Camiseta Forja - Disciplina</h3>
+                        <p class="text-white font-inter text-sm mb-1">R$ 139,90</p>
+                        <p class="text-zinc-500 font-inter text-[10px] uppercase tracking-wider">3x de R$ 46,63 Sem Juros</p>
+                    </div>
+                </div>
+
+                <!-- Produto 2 -->
+                <div class="product-card group cursor-pointer">
+                    <div class="relative bg-zinc-900 aspect-[3/4] overflow-hidden mb-4 border border-transparent group-hover:border-zinc-800 transition-colors">
+                        <div class="absolute top-3 left-3 z-20 bg-transparent border border-zinc-500 text-zinc-300 font-inter text-[10px] font-bold uppercase tracking-wider px-2 py-1">Novo</div>
+                        <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=1887&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500">
+                    </div>
+                    <div>
+                        <h3 class="text-white font-cinzel text-sm uppercase tracking-wider mb-1">Moletom Forjado</h3>
+                        <p class="text-white font-inter text-sm mb-1">R$ 239,90</p>
+                        <p class="text-zinc-500 font-inter text-[10px] uppercase tracking-wider">3x de R$ 79,96 Sem Juros</p>
+                    </div>
+                </div>
+
+                 <!-- Produto 3 -->
+                <div class="product-card group cursor-pointer">
+                    <div class="relative bg-zinc-900 aspect-[3/4] overflow-hidden mb-4 border border-transparent group-hover:border-zinc-800 transition-colors">
+                        <div class="absolute top-3 left-3 z-20 bg-transparent border border-brand-orange text-brand-orange font-inter text-[10px] font-bold uppercase tracking-wider px-2 py-1">Em Alta</div>
+                        <img src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?q=80&w=2015&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500">
+                    </div>
+                    <div>
+                        <h3 class="text-white font-cinzel text-sm uppercase tracking-wider mb-1">Camiseta Propósito</h3>
+                        <p class="text-white font-inter text-sm mb-1">R$ 139,90</p>
+                        <p class="text-zinc-500 font-inter text-[10px] uppercase tracking-wider">3x de R$ 46,63 Sem Juros</p>
+                    </div>
+                </div>
+
+                 <!-- Produto 4 -->
+                <div class="product-card group cursor-pointer">
+                    <div class="relative bg-zinc-900 aspect-[3/4] overflow-hidden mb-4 border border-transparent group-hover:border-zinc-800 transition-colors">
+                        <div class="absolute top-3 left-3 z-20 bg-transparent border border-zinc-500 text-zinc-300 font-inter text-[10px] font-bold uppercase tracking-wider px-2 py-1">Novo</div>
+                        <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500 sm:object-top">
+                    </div>
+                    <div>
+                        <h3 class="text-white font-cinzel text-sm uppercase tracking-wider mb-1">Moletom Legado</h3>
+                        <p class="text-white font-inter text-sm mb-1">R$ 239,90</p>
+                        <p class="text-zinc-500 font-inter text-[10px] uppercase tracking-wider">3x de R$ 79,96 Sem Juros</p>
+                    </div>
+                </div>
+
+            </div>
+             <!-- Botão Ver Todos Mobile -->
+             <div class="mt-12 flex justify-center sm:hidden">
+                <a href="#" class="flex items-center gap-2 text-zinc-400 hover:text-brand-orange font-inter text-sm uppercase tracking-widest transition-colors">
+                    Ver Todos os Produtos <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                 </a>
+             </div>
+        </div>
+    </section>
+
+    <!-- =========================================
+         SEÇÃO: SOBRE A FORJA (Mantida como extra)
+         ========================================= -->
+    
+
+     <!-- =========================================
+         FAIXA DE CARACTERÍSTICAS (Features Banner)
+         ========================================= -->
+    <section class="py-12 bg-black border-y border-zinc-900">
+        <div class="max-w-[1400px] mx-auto px-6 sm:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Feature 1 -->
+                <div class="flex items-center gap-4 justify-center sm:justify-start">
+                    <i data-lucide="hammer" class="w-8 h-8 text-brand-orange"></i>
+                    <div>
+                        <h4 class="text-white font-cinzel text-sm uppercase tracking-wider mb-1">Produzido com Propósito</h4>
+                        <p class="text-zinc-500 font-inter text-xs">Cada peça carrega um significado.</p>
+                    </div>
+                </div>
+                 <!-- Feature 2 -->
+                 <div class="flex items-center gap-4 justify-center sm:justify-start">
+                    <i data-lucide="shield-check" class="w-8 h-8 text-brand-orange"></i>
+                    <div>
+                        <h4 class="text-white font-cinzel text-sm uppercase tracking-wider mb-1">Materiais Premium</h4>
+                        <p class="text-zinc-500 font-inter text-xs">Qualidade que resiste ao tempo.</p>
+                    </div>
+                </div>
+                 <!-- Feature 3 -->
+                 <div class="flex items-center gap-4 justify-center sm:justify-start">
+                    <i data-lucide="flame" class="w-8 h-8 text-brand-orange"></i>
+                    <div>
+                        <h4 class="text-white font-cinzel text-sm uppercase tracking-wider mb-1">Tiragens Limitadas</h4>
+                        <p class="text-zinc-500 font-inter text-xs">Poucos terão. Isso é FORJA.</p>
+                    </div>
+                </div>
+                 <!-- Feature 4 -->
+                 <div class="flex items-center gap-4 justify-center sm:justify-start">
+                    <i data-lucide="lock" class="w-8 h-8 text-brand-orange"></i>
+                    <div>
+                        <h4 class="text-white font-cinzel text-sm uppercase tracking-wider mb-1">Compra Segura</h4>
+                        <p class="text-zinc-500 font-inter text-xs">Ambiente 100% seguro e confiável.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================
+         FOOTER REDESENHADO (Com Newsletter e Fundo)
+         ========================================= -->
+    <footer class="relative pt-20 pb-10 overflow-hidden bg-[#050505]">
+        <!-- Imagem de Fundo e Overlay Escuro -->
+        <div class="absolute inset-0 z-0">
+            <!-- Coloque a imagem que você deseja para o fundo do footer aqui -->
+            <img src="img/footer.png">
             
-            <div class="flex items-center gap-3 text-zinc-600 text-xs sm:text-sm bg-black/30 px-4 py-2 rounded-full border border-zinc-800/50">
-                <span>Operação Segura Via Mercado Pago</span>
-                <i data-lucide="shield-check" class="w-4 h-4 text-brand-orange"></i>
+            <!-- Gradiente para escurecer as bordas e manter as letras visíveis -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/95 to-[#050505]/80"></div>
+        </div>
+
+        <div class="relative z-10 max-w-[1400px] mx-auto px-6 sm:px-8">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20">
+                <!-- Coluna Esquerda: Logo e Slogan -->
+                <div class="lg:col-span-5">
+                     <div class="flex items-center gap-3 mb-8">
+                        <img src="img/logoforja2.PNG" alt="Logo Forja" class="h-20 sm:h-28 w-auto object-contain">
+                    </div>
+                    <p class="text-zinc-400 font-cinzel uppercase tracking-[0.15em] text-sm mb-8 leading-relaxed">
+                        Forjado nas sombras.<br>Reconhecido pelos resultados.
+                    </p>
+                    <!-- Ícones Sociais -->
+                    <div class="flex gap-6 text-zinc-500">
+                        <a href="#" class="hover:text-brand-orange transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                        <a href="#" class="hover:text-brand-orange transition-colors"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                        <a href="#" class="hover:text-brand-orange transition-colors"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+                        <a href="#" class="hover:text-brand-orange transition-colors"><i data-lucide="message-circle" class="w-5 h-5"></i></a>
+                    </div>
+                </div>
+
+                <!-- Coluna Direita: Links e Newsletter -->
+                <div class="lg:col-span-7 flex flex-col md:flex-row gap-12 lg:justify-end">
+                    
+                    <!-- Links Rápidos -->
+                    <div class="grid grid-cols-2 gap-12 md:w-1/2">
+                        <div>
+                            <h4 class="text-white font-cinzel text-sm uppercase tracking-widest mb-6">Navegação</h4>
+                            <ul class="space-y-4 font-inter text-xs text-zinc-400 uppercase tracking-wider">
+                                <li><a href="#" class="hover:text-white transition-colors">Início</a></li>
+                                <li><a href="#colecoes" class="hover:text-white transition-colors">Coleções</a></li>
+                                <li><a href="#sobre" class="hover:text-white transition-colors">Sobre</a></li>
+                                <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-cinzel text-sm uppercase tracking-widest mb-6">Suporte</h4>
+                            <ul class="space-y-4 font-inter text-xs text-zinc-400 uppercase tracking-wider">
+                                <li><a href="#" class="hover:text-white transition-colors">Contato</a></li>
+                                <li><a href="#" class="hover:text-white transition-colors">Envios</a></li>
+                                <li><a href="#" class="hover:text-white transition-colors">Trocas</a></li>
+                                <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Newsletter Form -->
+                    <div class="md:w-1/2 max-w-md">
+                        <h4 class="text-white font-cinzel text-lg uppercase tracking-widest mb-2">Entre para o Clube.</h4>
+                        <p class="text-zinc-500 font-inter text-xs mb-6">Seja o primeiro a saber das novas coleções e lançamentos exclusivos.</p>
+                        
+                        <form class="flex relative">
+                            <input type="email" placeholder="Seu e-mail" class="w-full bg-zinc-900/50 border border-zinc-800 focus:border-brand-orange text-zinc-300 font-inter text-sm px-4 py-4 outline-none pr-16 transition-colors placeholder:text-zinc-600 placeholder:uppercase placeholder:text-xs">
+                            <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-brand-orange p-2 transition-colors">
+                                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
+
+            <!-- Barra Inferior Copyright -->
+            <div class="border-t border-zinc-900/50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                <p class="text-zinc-600 font-inter text-xs uppercase tracking-wider">© FORJA 2026. Todos os direitos reservados.</p>
+                <div class="flex gap-4 text-zinc-600">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i>
+                    <i data-lucide="bitcoin" class="w-4 h-4"></i>
+                </div>
+            </div>
+
         </div>
     </footer>
 
-    <!-- Scripts de Interação (Mobile Menu) -->
+    <!-- =========================================
+         SCRIPTS (Funcionalidade)
+         ========================================= -->
     <script>
         // Inicializar Ícones Lucide
         lucide.createIcons();
 
-        // Lógica do Menu Mobile
+        // --- LÓGICA DO MENU MOBILE ---
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
         const menuIcon = document.getElementById('menu-icon');
@@ -242,30 +608,83 @@
 
         function toggleMenu() {
             isMenuOpen = !isMenuOpen;
-            
             if (isMenuOpen) {
                 menu.classList.remove('hidden-menu');
                 menu.classList.add('active-menu');
-                document.body.style.overflow = 'hidden'; // Evita scroll do fundo
                 menuIcon.classList.add('hidden');
                 closeIcon.classList.remove('hidden');
             } else {
                 menu.classList.remove('active-menu');
                 menu.classList.add('hidden-menu');
-                document.body.style.overflow = ''; // Restaura scroll
                 menuIcon.classList.remove('hidden');
                 closeIcon.classList.add('hidden');
             }
         }
 
         btn.addEventListener('click', toggleMenu);
-        
-        // Fechar menu ao clicar num link
         links.forEach(link => {
-            link.addEventListener('click', () => {
-                if(isMenuOpen) toggleMenu();
-            });
+            link.addEventListener('click', () => { if(isMenuOpen) toggleMenu(); });
         });
+
+        // --- EFEITO DE SCROLL NO NAV ---
+        const nav = document.getElementById('main-nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-brand-dark/95', 'backdrop-blur-md', 'shadow-lg', 'border-b', 'border-zinc-900/50');
+                nav.classList.remove('pt-4');
+            } else {
+                nav.classList.remove('bg-brand-dark/95', 'backdrop-blur-md', 'shadow-lg', 'border-b', 'border-zinc-900/50');
+                nav.classList.add('pt-4');
+            }
+        });
+
+        // --- LÓGICA DO GATEKEEPER (Mantida) ---
+        const gatekeeper = document.getElementById('gatekeeper');
+        const btnExcecao = document.getElementById('btn-excecao');
+        document.body.style.overflow = 'hidden';
+        btnExcecao.disabled = true;
+        let countdown = 3;
+        const originalText = btnExcecao.innerText;
+        btnExcecao.innerText = `${originalText} (${countdown}s)`;
+        const timer = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                btnExcecao.innerText = `${originalText} (${countdown}s)`;
+            } else {
+                clearInterval(timer);
+                btnExcecao.disabled = false;
+                btnExcecao.innerText = originalText;
+            }
+        }, 1000);
+        btnExcecao.addEventListener('click', () => {
+            gatekeeper.style.opacity = '0';
+            setTimeout(() => {
+                gatekeeper.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 700);
+        });
+
+        // --- SISTEMA DE FAÍSCAS (Mantido) ---
+        document.addEventListener('click', function(e) {
+            const numSparks = Math.floor(Math.random() * 6) + 4; 
+            for (let i = 0; i < numSparks; i++) createSpark(e.clientX, e.clientY);
+        });
+        function createSpark(x, y) {
+            const spark = document.createElement('div');
+            spark.classList.add('spark');
+            const colors = ['#FF4500', '#FF8C00', '#FFA500', '#ff5e00'];
+            spark.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            spark.style.left = x + 'px';
+            spark.style.top = y + 'px';
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.random() * 50 + 30; 
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance + (Math.random() * 50); 
+            spark.style.setProperty('--tx', tx + 'px');
+            spark.style.setProperty('--ty', ty + 'px');
+            document.body.appendChild(spark);
+            setTimeout(() => spark.remove(), 800);
+        }
     </script>
 </body>
 </html>
